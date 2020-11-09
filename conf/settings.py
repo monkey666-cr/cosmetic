@@ -42,18 +42,20 @@ try:
     PASSWORD = email_conf['password']
     SENDER = email_conf['sender']
     RECEIVER = email_conf['receiver']
+    SENDER_NAME = email_conf['sender_name']
 except Exception as e:
     print(f"Load Email Conf Failed: {str(e)}")
     exit(0)
 
 if __name__ == '__main__':
-    print(MAX_WORKS)
-    print(INTERVAL)
-    print(GOLD_GROUP)
-    print(RIVE_GROUP)
-    print(LETU_GROUP)
-    print(ILEDEBEAUTE_GROUP)
+    # print(MAX_WORKS)
+    # print(INTERVAL)
+    # print(GOLD_GROUP)
+    # print(RIVE_GROUP)
+    # print(LETU_GROUP)
+    # print(ILEDEBEAUTE_GROUP)
     print(USER)
     print(PASSWORD)
     print(SENDER)
     print(RECEIVER)
+    print(SENDER_NAME)

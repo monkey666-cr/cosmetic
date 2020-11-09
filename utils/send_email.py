@@ -2,7 +2,7 @@ import smtplib
 
 from email.header import Header
 from email.mime.text import MIMEText
-from conf.settings import USER, RECEIVER, SENDER, PASSWORD
+from conf.settings import USER, RECEIVER, SENDER, PASSWORD, SENDER_NAME
 
 # {'website': 'Rive', 'product_id': '948720', 'product_name': 'Guerlain Abeille Royale Oil Set', 'low_price': '9015.0', 'price': '6310.0'}
 
@@ -31,8 +31,8 @@ def send_email(url, content=None):
     html = email_format.format(website, product_name, price, url)
 
     message = MIMEText(html, 'html', 'utf-8')
-    message['From'] = Header("奋斗小伙", 'utf-8')  # 发送者
-    message['To'] = Header("奋斗小伙", 'utf-8')  # 接收者
+    message['From'] = Header(SENDER_NAME, 'utf-8')  # 发送者
+    message['To'] = Header(SENDER_NAME, 'utf-8')  # 接收者
 
     subject = '低价购买通知'
     message['Subject'] = Header(subject, 'utf-8')
