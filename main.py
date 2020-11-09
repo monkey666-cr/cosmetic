@@ -59,7 +59,7 @@ def letu_start(url, **kwargs):
 
 @start_wrapper
 def iledebeaute_start(url, **kwargs):
-    return parse_iledebeaute_price_page(get_iledebeaute_price_page(url))
+    return parse_iledebeaute_price_page(url, get_iledebeaute_price_page(url))
 
 
 if __name__ == '__main__':
