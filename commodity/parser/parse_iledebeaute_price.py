@@ -5,7 +5,7 @@ import json
 def parse_price_page(url, text):
     """解析商品页面"""
     if text is None:
-        print("Parse Price Page Failed, text type is None")
+        print("iledebeaute: Parse Price Page Failed, text type is None")
         return
 
     try:
@@ -51,7 +51,7 @@ def _get_product_status(product_info):
 
 
 if __name__ == '__main__':
-    from commodity.fetch_price import get_iledebeaute_price_page
+    from commodity.fetch.fetch_price import get_iledebeaute_price_page
 
     # url = "https://iledebeaute.ru/shop/care/face/anti-age/guerlain-abeille-royale-double-r-prod6d5e/#store_290624"
     url = "https://iledebeaute.ru/shop/care/face/clearning/estee-lauder-revitalizing-supreme-prod7ttn/"

@@ -54,7 +54,7 @@ class RiveParser:
 
 
 if __name__ == '__main__':
-    from commodity.fetch_price import GetRiveGaucheInfo
+    from commodity.fetch.fetch_price import GetRiveGaucheInfo
 
     url = "https://shop.rivegauche.ru/product/la-mousse"
     rive = GetRiveGaucheInfo(url)

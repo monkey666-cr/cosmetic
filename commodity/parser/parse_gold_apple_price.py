@@ -9,7 +9,7 @@ from lxml import etree
 
 def parse_price_page_by_json(url, text):
     if text is None:
-        print("Parse Price Page Failed, text type is None")
+        print(f"Gold Apple: Parse Price Page Failed, text type is None")
         return
 
     try:
@@ -59,7 +59,7 @@ def _parse_url_sku(url):
 def parse_price_page(text):
     """解析商品页面"""
     if text is None:
-        print("Parse Price Page Failed, text type is None")
+        print(f"Gold Apple: Parse Price Page Failed, text type is None")
         return
     root = etree.HTML(text)
 
@@ -145,7 +145,7 @@ def _get_product_status(element: etree.Element):
 
 
 if __name__ == '__main__':
-    from commodity.fetch_price import get_gold_apple_price_page
+    from commodity.fetch.fetch_price import get_gold_apple_price_page
 
     url = "https://goldapple.ru/10009-15050100043-abeille-royale#sku=15050100043"
     # url = "https://goldapple.ru/15160100021-la-mousse"

@@ -10,7 +10,7 @@ import requests
 
 from lxml import etree
 
-from commodity.parse_rive_price import RiveParser
+from commodity.parser.parse_rive_price import RiveParser
 
 REQUEST_TIMEOUT = 40
 REQUEST_TRY = 3
@@ -37,6 +37,7 @@ def get_gold_apple_price_page(url):
 
 
 class GetRiveGaucheInfo:
+    __website__ = "Rive"
 
     def __init__(self, start_url):
         self.session = requests.session()
@@ -104,7 +105,7 @@ class GetRiveGaucheInfo:
         try:
             price_page = self.get_rive_gauche_price_page()
             if price_page is None:
-                raise Exception("Parse Price Page Failed, text type is None")
+                raise Exception(f"{self.__website__}: Parse Price Page Failed, text type is None")
 
             root = etree.HTML(price_page)
             product_id = RiveParser.get_product_id(root)

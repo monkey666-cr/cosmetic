@@ -1,6 +1,6 @@
 import re
 
-from commodity.fetch_price import GetLetuPriceInfo
+from commodity.fetch.fetch_price import GetLetuPriceInfo
 
 
 def parse_letu_price(url, content):

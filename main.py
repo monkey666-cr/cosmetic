@@ -4,10 +4,10 @@ from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
 
 from utils.send_email import send_email
 from conf.settings import GOLD_GROUP, RIVE_GROUP, INTERVAL, LETU_GROUP, ILEDEBEAUTE_GROUP, MAX_WORKS
-from commodity.parse_letu_price import parse_letu_price, get_letu_product_status
-from commodity.parse_gold_apple_price import parse_price_page_by_json as parse_gold
-from commodity.parse_iledebeaute_price import parse_price_page as parse_iledebeaute_price_page
-from commodity.fetch_price import get_gold_apple_price_page, GetRiveGaucheInfo, GetLetuPriceInfo, \
+from commodity.parser.parse_letu_price import parse_letu_price, get_letu_product_status
+from commodity.parser.parse_gold_apple_price import parse_price_page_by_json as parse_gold
+from commodity.parser.parse_iledebeaute_price import parse_price_page as parse_iledebeaute_price_page
+from commodity.fetch.fetch_price import get_gold_apple_price_page, GetRiveGaucheInfo, GetLetuPriceInfo, \
     get_iledebeaute_price_page
 
 executor = ThreadPoolExecutor(max_workers=MAX_WORKS)
