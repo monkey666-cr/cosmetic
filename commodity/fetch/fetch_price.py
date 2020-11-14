@@ -10,10 +10,8 @@ import requests
 
 from lxml import etree
 
+from . import REQUEST_TIMEOUT, REQUEST_TRY
 from commodity.parser.parse_rive_price import RiveParser
-
-REQUEST_TIMEOUT = 40
-REQUEST_TRY = 3
 
 
 def get_gold_apple_price_page(url):

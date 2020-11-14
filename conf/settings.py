@@ -30,6 +30,8 @@ RIVE_GROUP = format_lambda(conf.items('rive'))
 LETU_GROUP = format_lambda(conf.items('letu'))
 # iledebeaute
 ILEDEBEAUTE_GROUP = format_lambda(conf.items('iledebeaute'))
+# lancome
+LANCOME_GROUP = format_lambda(conf.items("lancome"))
 
 # 邮箱配置
 email_conf = {item[0]: item[1] for item in conf.items('email')}
