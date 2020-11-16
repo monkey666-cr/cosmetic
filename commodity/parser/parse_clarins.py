@@ -1,6 +1,8 @@
 import re
 import json
 
+from lxml import etree
+
 
 class ClarinsParser:
 
@@ -49,14 +51,19 @@ class ClarinsParser:
     def parse_price_avg(text):
         """解析单价"""
         try:
-            pass
+            root = etree.HTML(text)
+            price = root.xpath("//li[@data-auto-id='summary-order-total']//span[@class='value']")[0].text
+            price = price.strip().replace(".", "").replace(",", "").split()[0]
+            price = round(float(price) / 3, 2)
+            return price
         except Exception as e:
-            pass
+            raise Exception(f"Clarins: Parse Product Price Failed, {str(e)}")
 
     @staticmethod
-    def parse_product_status(text):
+    def parse_product_status(product_info: dict):
         """解析商品状态"""
         try:
-            pass
+            status = True if product_info.get("stock", 0) > 0 else False
+            return status
         except Exception as e:
-            pass
+            raise Exception(f"Clarins: Parse Product Status Failed, {str(e)}")

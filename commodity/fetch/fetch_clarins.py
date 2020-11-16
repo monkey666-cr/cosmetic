@@ -52,8 +52,10 @@ class Clarins:
         product_id = ClarinsParser.parse_product_id(product_info)
         product_sku_code = ClarinsParser.parse_product_sku(product_info)
         product_name = ClarinsParser.parse_product_name(product_info)
+        status = ClarinsParser.parse_product_status(product_info)
         self.result["product_id"] = product_sku_code
         self.result["product_name"] = product_name
+        self.result["status"] = status
         return {
             "pid": product_sku_code,
             "pname": product_name,
@@ -96,19 +98,26 @@ class Clarins:
 
         raise Exception(error_msg)
 
-    def parse_price_and_status(self, cart_page):
+    def parse_price(self, cart_page):
         price = ClarinsParser.parse_price_avg(cart_page)
-        status = ClarinsParser.parse_product_status(cart_page)
+
         self.result["price"] = price
-        self.result["status"] = status
+        self.result["low_price"] = "0"
 
     def __call__(self, *args, **kwargs):
         index_page = self.fetch_index_page()
         # 解析基本信息
         add_cart_params = self.parse_base_info(index_page)
+        if not self.result.get("status"):
+            self.result["price"] = "0"
+            self.result["low_price"] = "0"
+            return self.result
+
         # 添加购物车
         self.fetch_add_product_to_cart(add_cart_params)
         # 查询购物车页面
         cart_page = self.fetch_cart()
         # 解析购物车页面，获取价格以及状态
-        self.parse_price_and_status(cart_page)
+        self.parse_price(cart_page)
+
+        return self.result
