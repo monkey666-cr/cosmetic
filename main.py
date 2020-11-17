@@ -3,7 +3,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
 
 from utils.send_email import send_email
-from conf.settings import GOLD_GROUP, RIVE_GROUP, INTERVAL, LETU_GROUP, ILEDEBEAUTE_GROUP, MAX_WORKS, LANCOME_GROUP
+from conf.settings import GOLD_GROUP, RIVE_GROUP, INTERVAL, LETU_GROUP, ILEDEBEAUTE_GROUP, MAX_WORKS, LANCOME_GROUP, \
+    CLARINS_GROUP
 from commodity.parser.parse_letu_price import parse_letu_price, get_letu_product_status
 from commodity.parser.parse_gold_apple_price import parse_price_page_by_json as parse_gold
 from commodity.parser.parse_iledebeaute_price import parse_price_page as parse_iledebeaute_price_page
@@ -11,6 +12,7 @@ from commodity.fetch.fetch_price import get_gold_apple_price_page, GetRiveGauche
     get_iledebeaute_price_page
 from commodity.fetch.fetch_lancome import fetch_lancome
 from commodity.parser.parse_lancome import parse_lancome_price_page
+from commodity.fetch.fetch_clarins import Clarins
 
 executor = ThreadPoolExecutor(max_workers=MAX_WORKS)
 SUCCESS = []  # 获取商品成功发送成功的URL
@@ -69,6 +71,12 @@ def lancome_start(url, **kwargs):
     return parse_lancome_price_page(fetch_lancome(url))
 
 
+@start_wrapper
+def clarins_start(url, **kwargs):
+    clarins = Clarins(url)
+    return clarins()
+
+
 if __name__ == '__main__':
     while 1:
         all_tasks = [
@@ -93,6 +101,11 @@ if __name__ == '__main__':
 
         all_tasks.extend([
             executor.submit(lancome_start, url, **value) for url, value in LANCOME_GROUP.items()
+            if url not in SUCCESS]
+        )
+
+        all_tasks.extend([
+            executor.submit(clarins_start, url, **value) for url, value in CLARINS_GROUP.items()
             if url not in SUCCESS]
         )
 
