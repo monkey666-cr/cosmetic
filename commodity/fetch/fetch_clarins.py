@@ -102,22 +102,25 @@ class Clarins:
         price = ClarinsParser.parse_price_avg(cart_page)
 
         self.result["price"] = price
-        self.result["low_price"] = "0"
+        self.result["low_price"] = price
 
     def __call__(self, *args, **kwargs):
-        index_page = self.fetch_index_page()
-        # 解析基本信息
-        add_cart_params = self.parse_base_info(index_page)
-        if not self.result.get("status"):
-            self.result["price"] = "0"
-            self.result["low_price"] = "0"
+        try:
+            index_page = self.fetch_index_page()
+            # 解析基本信息
+            add_cart_params = self.parse_base_info(index_page)
+            if not self.result.get("status"):
+                self.result["price"] = "0"
+                self.result["low_price"] = "0"
+                return self.result
+
+            # 添加购物车
+            self.fetch_add_product_to_cart(add_cart_params)
+            # 查询购物车页面
+            cart_page = self.fetch_cart()
+            # 解析购物车页面，获取价格以及状态
+            self.parse_price(cart_page)
+
             return self.result
-
-        # 添加购物车
-        self.fetch_add_product_to_cart(add_cart_params)
-        # 查询购物车页面
-        cart_page = self.fetch_cart()
-        # 解析购物车页面，获取价格以及状态
-        self.parse_price(cart_page)
-
-        return self.result
+        except Exception as e:
+            pass

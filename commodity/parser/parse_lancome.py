@@ -2,23 +2,26 @@ from lxml import etree
 
 
 def parse_lancome_price_page(text):
-    root = etree.HTML(text)
-    product_id = _parse_product_id(root)
-    product_name = _parse_product_name(root)
-    low_price = _parse_low_price(root)
-    price = _parse_price(root)
-    status = _parse_product_status(root)
+    try:
+        root = etree.HTML(text)
+        product_id = _parse_product_id(root)
+        product_name = _parse_product_name(root)
+        low_price = _parse_low_price(root)
+        price = _parse_price(root)
+        status = _parse_product_status(root)
 
-    result = {
-        "website": "lancome",
-        "product_id": product_id,
-        "product_name": product_name,
-        "low_price": low_price,
-        "price": price,
-        "status": status
-    }
+        result = {
+            "website": "lancome",
+            "product_id": product_id,
+            "product_name": product_name,
+            "low_price": low_price,
+            "price": price,
+            "status": status
+        }
 
-    return result
+        return result
+    except Exception:
+        pass
 
 
 def _parse_price(element: etree.Element):

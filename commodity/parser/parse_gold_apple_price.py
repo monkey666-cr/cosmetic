@@ -91,7 +91,7 @@ def _get_product_id(element: etree.Element):
             raise Exception("Product ID is None")
         return product_id
     except Exception as e:
-        raise Exception(f"Get Product ID Failed: {str(e)}")
+        raise Exception(f"Gold Apple Get Product ID Failed: {str(e)}")
 
 
 def _get_product_name(element: etree.Element):

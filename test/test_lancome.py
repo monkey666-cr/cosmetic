@@ -8,7 +8,7 @@ def test_fetch_lancome():
 
 
 def test_parse_lancome():
-    url = "https://lancome.ru/gen-f50-c15-yx5-n15-prest-set-x20.html"
+    url = "https://lancome.ru/absolue-setx20.html"
     print(parse_lancome_price_page(fetch_lancome(url)))
 
 
