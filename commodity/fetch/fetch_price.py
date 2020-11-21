@@ -11,6 +11,7 @@ import requests
 from lxml import etree
 
 from . import REQUEST_TIMEOUT, REQUEST_TRY
+from conf.settings import PROXY_HOST, PROXY_PORT
 from commodity.parser.parse_rive_price import RiveParser
 
 
@@ -49,13 +50,20 @@ class GetRiveGaucheInfo:
                       '*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
         }
+        self._proxies = None
+        if PROXY_HOST and PROXY_HOST:
+            self._proxies = {
+                "http": f"http://{PROXY_HOST}:{PROXY_PORT}",
+                "https": f"https://{PROXY_HOST}:{PROXY_PORT}"
+            }
 
     def get_rive_gauche_price_page(self):
         # 获取价格页面
         print(f"Get Rive Price Page ......")
         for _ in range(REQUEST_TRY):
             try:
-                response = self.session.get(self.start_url, headers=self.headers, timeout=REQUEST_TIMEOUT + 40)
+                response = self.session.get(self.start_url, headers=self.headers, proxies=self._proxies,
+                                            timeout=REQUEST_TIMEOUT + 40)
                 if response.status_code == 200:
                     return response.text
             except Exception as e:
@@ -77,10 +85,15 @@ class GetRiveGaucheInfo:
         headers["Content-Type"] = 'application/x-www-form-urlencoded; charset=UTF-8'
         headers["X-Requested-With"] = 'XMLHttpRequest'
 
-        try:
-            self.session.post(url, headers=headers, data=data, timeout=REQUEST_TIMEOUT)
-        except Exception as e:
-            raise Exception(f"Fetch /cart/add Failed: {str(e)}")
+        error_msg = ""
+        for _ in range(REQUEST_TRY):
+            try:
+                self.session.post(url, headers=headers, data=data, proxies=self._proxies, timeout=REQUEST_TIMEOUT)
+                break
+            except Exception as e:
+                error_msg = f"Fetch /cart/add Failed: {str(e)}"
+        else:
+            raise Exception(error_msg)
 
     def _product_status(self):
         # 商品状态
@@ -91,13 +104,17 @@ class GetRiveGaucheInfo:
         headers["Referer"] = self.start_url
         headers["X-Requested-With"] = 'XMLHttpRequest'
 
-        try:
-            response = self.session.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
-            if response.status_code != 200:
-                raise Exception("Fetch product status Response is not 200")
-            return response.text
-        except Exception as e:
-            raise Exception(f"Fetch product status Failed: {str(e)}")
+        error_msg = ""
+        for _ in range(REQUEST_TRY):
+            try:
+                response = self.session.get(url, headers=headers, proxies=self._proxies, timeout=REQUEST_TIMEOUT)
+                if response.status_code != 200:
+                    raise Exception("Fetch product status Response is not 200")
+                return response.text
+            except Exception as e:
+                error_msg = f"Fetch product status Failed: {str(e)}"
+        else:
+            raise Exception(error_msg)
 
     def __call__(self, *args, **kwargs):
         try:

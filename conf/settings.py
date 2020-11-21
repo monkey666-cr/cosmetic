@@ -18,6 +18,10 @@ conf.read(conf_path, encoding="utf-8")
 
 thread_conf = {item[0]: item[1] for item in conf.items('threading')}
 
+proxy_conf = {item[0]: item[1] for item in conf.items("proxy")}
+PROXY_HOST = proxy_conf.get("host")
+PROXY_PORT = proxy_conf.get("port")
+
 # 解析任务配置
 format_lambda = lambda x: {x[index][1]: {"min": float(x[index + 1][1]), "max": float(x[index + 2][1])}
                            for index in range(0, len(x), 3)}

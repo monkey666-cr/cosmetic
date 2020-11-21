@@ -53,7 +53,7 @@ class ClarinsParser:
         try:
             root = etree.HTML(text)
             price = root.xpath("//li[@data-auto-id='summary-order-total']//span[@class='value']")[0].text
-            price = price.strip().replace(".", "").replace(",", "").split()[0]
+            price = price.strip().replace(".", "").split(",")[0]
             price = round(float(price) / 3, 2)
             return price
         except Exception as e:
