@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+verify_ssl = true
+
+[dev-packages]
+autopep8 = "*"
+
+[packages]
+certifi = "==2020.6.20"
+chardet = "==3.0.4"
+idna = "==2.10"
+lxml = "==4.6.1"
+requests = "==2.24.0"
+urllib3 = "==1.25.11"
+
+[requires]
+python_version = "3.8"

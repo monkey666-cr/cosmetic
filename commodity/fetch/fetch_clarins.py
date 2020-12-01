@@ -27,15 +27,41 @@ class Clarins:
         self.session = requests.session()
         self.result = dict(website=self.__website__)
 
+    def login(self):
+        login_form = ClarinsParser.parse_login_params(self._fetch_login_index_page())
+        
+
+    def _fetch_login_index_page(self):
+        """
+        获取登陆的form参数
+        """
+        login_index_url = "https://www.clarins.ru/akkaunt"
+
+        error_msg = ""
+        for _ in range(REQUEST_TRY):
+            try:
+                response = self.session.get(login_index_url, timeout=REQUEST_TIMEOUT)
+                if response.status_code == 200:
+                    return response.text
+                raise Exception(
+                    f"{self.__website__}: Fetch Login Index Page Response Is Not 200")
+            except Exception as e:
+                error_msg = f"{self.__website__}: Fetch Login index page failed: {str(e)}"
+                print(error_msg)
+
+        raise Exception(error_msg)
+
     def fetch_index_page(self):
         # 访问商品首页
         error_msg = ""
         for _ in range(REQUEST_TRY):
             try:
-                response = self.session.get(self.index_url, headers=self.headers, timeout=REQUEST_TIMEOUT)
+                response = self.session.get(
+                    self.index_url, headers=self.headers, timeout=REQUEST_TIMEOUT)
                 if response.status_code == 200:
                     return response.text
-                raise Exception(f"{self.__website__}: Fetch Index Page Response Is Not 200")
+                raise Exception(
+                    f"{self.__website__}: Fetch Index Page Response Is Not 200")
             except Exception as e:
                 error_msg = f"{self.__website__}: Fetch index page failed: {str(e)}"
                 print(error_msg)
@@ -74,7 +100,8 @@ class Clarins:
         error_msg = ""
         for _ in range(REQUEST_TRY):
             try:
-                response = self.session.post(url, headers=headers, data=params, timeout=REQUEST_TIMEOUT)
+                response = self.session.post(
+                    url, headers=headers, data=params, timeout=REQUEST_TIMEOUT)
                 if response.status_code == 200:
                     return response.text
                 raise Exception("Response Is Not 200")
@@ -89,7 +116,8 @@ class Clarins:
         error_msg = ""
         for _ in range(REQUEST_TRY):
             try:
-                response = self.session.get(url, headers=self.headers, timeout=REQUEST_TIMEOUT)
+                response = self.session.get(
+                    url, headers=self.headers, timeout=REQUEST_TIMEOUT)
                 if response.status_code == 200:
                     return response.text
                 raise Exception("Response Is Not 200")

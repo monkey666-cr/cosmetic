@@ -67,3 +67,17 @@ class ClarinsParser:
             return status
         except Exception as e:
             raise Exception(f"Clarins: Parse Product Status Failed, {str(e)}")
+
+    @staticmethod
+    def parse_login_params(login_index_page: str):
+        """解析登陆首页的参数"""
+        res = dict()
+        try:
+            root = etree.HTML(login_index_page)
+            form = root.xpath('//form[@id="dwfrm_login"]')[0]
+            res['url'] = form.get('action')
+            res['dwfrm_login_securekey'] = form.xpath('.//input[@name="dwfrm_login_securekey"]')[0].get("value")
+        except Exception as e:
+            raise Exception(f"Clarins: Parse Login Index Failed, {str(e)}")
+
+        return res
