@@ -7,14 +7,15 @@ from commodity.parser.parse_clarins import ClarinsParser
 
 def test_clarins_fetch():
     # url = "https://www.clarins.ru/nabor-sredstv-uhoda--osvezhayushchih-cvet-lica-80072404.html"
-    url = "https://www.clarins.ru/regeneriruyushchij-dnevnoj-krem-protiv-morshchin-dlya-suhoj-kozhi-80033511.html"
+    # url = "https://www.clarins.ru/double-serum-kompleksnaya-omolazhivayushchaya-dvojnaya-syvorotka-30ml-80025862.html"
+    url = "https://www.clarins.ru/nabor-sredstv-uhoda--osvezhayushchih-cvet-lica-80072404.html"
     clarins = Clarins(url)
     result = clarins()
 
     print(result)
 
     assert result.get("website") == "Clarins"
-    assert result.get("price") == 6800.0
+    assert result.get("low_price") == 7650
 
 
 def test_clarins_parse_login_index_page():
