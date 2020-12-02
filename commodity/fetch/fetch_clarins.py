@@ -28,8 +28,33 @@ class Clarins:
         self.result = dict(website=self.__website__)
 
     def login(self):
-        login_form = ClarinsParser.parse_login_params(self._fetch_login_index_page())
-        
+        login_form = ClarinsParser.parse_login_params(
+            self._fetch_login_index_page())
+        login_url = login_form.pop("url")
+
+        headers = {
+            'authority': 'www.clarins.ru',
+            'sec-ch-ua': '"Chromium";v="86", ""Not\\A;Brand";v="99", "Google Chrome";v="86"',
+            'origin': 'https://www.clarins.ru',
+            'content-type': 'application/x-www-form-urlencoded',
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'referer': 'https://www.clarins.ru/akkaunt',
+            'accept-language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        }
+
+        error_msg = ""
+        for _ in range(REQUEST_TRY):
+            try:
+                response = self.session.post(
+                    login_url, headers=headers, data=login_form, timeout=REQUEST_TIMEOUT)
+                if response.status_code == 200:
+                    return response.text
+                raise Exception(
+                    "Clarins Login Failed: Response Status is not 200")
+            except Exception as e:
+                error_msg = str(e)
+        raise Exception(error_msg)
 
     def _fetch_login_index_page(self):
         """
@@ -40,7 +65,8 @@ class Clarins:
         error_msg = ""
         for _ in range(REQUEST_TRY):
             try:
-                response = self.session.get(login_index_url, timeout=REQUEST_TIMEOUT)
+                response = self.session.get(
+                    login_index_url, timeout=REQUEST_TIMEOUT)
                 if response.status_code == 200:
                     return response.text
                 raise Exception(

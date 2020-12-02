@@ -3,6 +3,8 @@ import json
 
 from lxml import etree
 
+from conf.settings import CLARINS_PASSWORD, CLARINS_ACCOUNT
+
 
 class ClarinsParser:
 
@@ -77,6 +79,12 @@ class ClarinsParser:
             form = root.xpath('//form[@id="dwfrm_login"]')[0]
             res['url'] = form.get('action')
             res['dwfrm_login_securekey'] = form.xpath('.//input[@name="dwfrm_login_securekey"]')[0].get("value")
+            # res[form.xpath('.//input[contains(@name, "dwfrm_login_username")]')[0].get("name")] = CLARINS_ACCOUNT
+            res["dwfrm_login_username_d0loteumpbsa"] = CLARINS_ACCOUNT
+            res["dwfrm_login_password"] = CLARINS_PASSWORD
+            res["dwfrm_login_login"] = "Войти"
+            res["dwfrm_login_rememberme"] = "true"
+            res["comingfrom"] = "null"
         except Exception as e:
             raise Exception(f"Clarins: Parse Login Index Failed, {str(e)}")
 

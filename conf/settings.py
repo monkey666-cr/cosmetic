@@ -23,8 +23,11 @@ PROXY_HOST = proxy_conf.get("host")
 PROXY_PORT = proxy_conf.get("port")
 
 # 解析任务配置
-format_lambda = lambda x: {x[index][1]: {"min": float(x[index + 1][1]), "max": float(x[index + 2][1])}
-                           for index in range(0, len(x), 3)}
+
+
+def format_lambda(x): return {x[index][1]: {"min": float(x[index + 1][1]), "max": float(x[index + 2][1])}
+                              for index in range(0, len(x), 3)}
+
 
 # goldapple
 GOLD_GROUP = format_lambda(conf.items('gold apple'))
@@ -42,6 +45,10 @@ CLARINS_GROUP = format_lambda(conf.items("clarins"))
 # 邮箱配置
 email_conf = {item[0]: item[1] for item in conf.items('email')}
 
+# clarins 账号配置
+CLARINS_ACCOUNT = conf.items("clarins account")[0][1]
+CLARINS_PASSWORD = conf.items("clarins account")[1][1]
+
 MAX_WORKS = int(thread_conf.get('max_works', 10))
 INTERVAL = int(thread_conf.get('interval', 300))
 
@@ -54,16 +61,3 @@ try:
 except Exception as e:
     print(f"Load Email Conf Failed: {str(e)}")
     exit(0)
-
-if __name__ == '__main__':
-    # print(MAX_WORKS)
-    # print(INTERVAL)
-    # print(GOLD_GROUP)
-    # print(RIVE_GROUP)
-    # print(LETU_GROUP)
-    # print(ILEDEBEAUTE_GROUP)
-    print(USER)
-    print(PASSWORD)
-    print(SENDER)
-    print(RECEIVER)
-    print(SENDER_NAME)

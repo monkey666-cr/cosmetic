@@ -29,3 +29,14 @@ def test_clarins_parse_login_index_page():
     assert "dwfrm_login_securekey" in login_form
     assert "url" in login_form
     assert "https://www.clarins.ru/akkaunt?dwcont" in login_form.get("url", "")
+    assert "dwfrm_login_password" in login_form
+    assert "dwfrm_login_login" in login_form
+    assert "dwfrm_login_rememberme" in login_form
+
+
+def test_clarins_login():
+    url = "https://www.clarins.ru/regeneriruyushchij-dnevnoj-krem-protiv-morshchin-dlya-suhoj-kozhi-80033511.html"
+    clarins = Clarins(url)
+    login_index_page = clarins.login()
+
+    assert "monkey" in login_index_page
