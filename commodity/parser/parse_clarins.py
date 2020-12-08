@@ -71,6 +71,18 @@ class ClarinsParser:
             raise Exception(f"Clarins: Parse Product Status Failed, {str(e)}")
 
     @staticmethod
+    def parse_product_status_by_page(product_page: str):
+        """解析商品状态"""
+        try:
+            root = etree.HTML(product_page)
+            status_text = root.xpath('//div[contains(@class, "information-section__button-position")]/button')[0].text
+            if "Нет в наличии" == status_text.strip():
+                return False
+            return True
+        except Exception as e:
+            raise Exception(f"Clarins: Parse Product Status Failed, {str(e)}")
+
+    @staticmethod
     def parse_login_params(login_index_page: str):
         """解析登陆首页的参数"""
         res = dict()

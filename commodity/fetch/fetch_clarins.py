@@ -104,12 +104,12 @@ class Clarins:
         product_id = ClarinsParser.parse_product_id(product_info)
         product_sku_code = ClarinsParser.parse_product_sku(product_info)
         product_name = ClarinsParser.parse_product_name(product_info)
-        # status = ClarinsParser.parse_product_status(product_info)
+        status = ClarinsParser.parse_product_status_by_page(index_page)
         self.result["product_id"] = product_sku_code
         self.result["product_name"] = product_name
         self.result["price"] = product_info.get("unit_price")
         self.result["low_price"] = product_info.get("unit_sale_price")
-        self.result["status"] = True if product_info.get("ispackage") == "yes" else False
+        self.result["status"] = status
         return {
             "pid": product_sku_code,
             "pname": product_name,
