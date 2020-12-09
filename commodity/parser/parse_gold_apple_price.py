@@ -30,13 +30,14 @@ def parse_price_page_by_json(url, text):
         product_name = product_info["defaultImages"][0]["title"]
         price = product_info["swatchConfig"]["optionPrices"][sku_key]["oldPrice"]["amount"]
         low_price = product_info["swatchConfig"]["optionPrices"][sku_key]["finalPrice"]["amount"]
+        best_price = product_info["swatchConfig"]["optionPrices"][sku_key]["bestLoyaltyPrice"]["amount"]
         status = True if sku_key in product_info["swatchConfig"]["salable_products"] else False
 
         result = {
             "website": "GoldApple",
             "product_id": product_id,
             "product_name": product_name,
-            "low_price": low_price,
+            "low_price": low_price if low_price < best_price else best_price,
             "price": price,
             "status": status
         }
@@ -147,7 +148,7 @@ def _get_product_status(element: etree.Element):
 if __name__ == '__main__':
     from commodity.fetch.fetch_price import get_gold_apple_price_page
 
-    url = "https://goldapple.ru/10009-15050100043-abeille-royale#sku=15050100043"
+    url = "https://goldapple.ru/19760313180-abeille-royale"
     # url = "https://goldapple.ru/15160100021-la-mousse"
     res = parse_price_page_by_json(get_gold_apple_price_page(url))
     print(res)
