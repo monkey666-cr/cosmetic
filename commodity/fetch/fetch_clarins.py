@@ -165,7 +165,8 @@ class Clarins:
             self.login()
             index_page = self.fetch_index_page()
             # 解析基本信息
-            add_cart_params = self.parse_base_info(index_page)
+            # add_cart_params = self.parse_base_info(index_page)
+            self.parse_base_info(index_page)
 
             # if not self.result.get("status"):
             #     self.result["price"] = "0"
@@ -180,5 +181,5 @@ class Clarins:
             # self.parse_price(cart_page)
 
             return self.result
-        except Exception as e:
+        except Exception:
             pass

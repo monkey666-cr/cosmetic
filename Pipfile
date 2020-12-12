@@ -5,6 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 autopep8 = "*"
+pylint = "*"
+pytest = "*"
 
 [packages]
 certifi = "==2020.6.20"

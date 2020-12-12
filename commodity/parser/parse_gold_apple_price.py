@@ -143,12 +143,3 @@ def _get_product_status(element: etree.Element):
         return status_map[product_status]
     except Exception as e:
         raise Exception(f"Get Product Price Failed: {str(e)}")
-
-
-if __name__ == '__main__':
-    from commodity.fetch.fetch_price import get_gold_apple_price_page
-
-    url = "https://goldapple.ru/19760313180-abeille-royale"
-    # url = "https://goldapple.ru/15160100021-la-mousse"
-    res = parse_price_page_by_json(get_gold_apple_price_page(url))
-    print(res)

@@ -258,20 +258,3 @@ def get_iledebeaute_price_page(url):
             raise Exception(f"Get iledebeaute Price Page Response is not 200")
         except Exception as e:
             print(f"Get iledebeaute Price Page Failed: {str(e)}")
-
-
-if __name__ == '__main__':
-    url = "https://goldapple.ru/10015-15020300026-double-serum"
-    get_gold_apple_price_page(url)
-    # url = "https://shop.rivegauche.ru/cart/rollover/RgMiniCart?_=1603801556307"
-    # url = "https://shop.rivegauche.ru/product/guerlain-abeille-royale-oil-set-1"
-    # url = "https://shop.rivegauche.ru/product/helena-rubinstein-powercell-skinmunity-serum-50"
-    # rive = GetRiveGaucheInfo(url)
-    # res = rive()
-    # print(res)
-
-    # url = "https://www.letu.ru/product/cle-de-peau-beaute-prozrachnaya-rassypchataya-pudra/66500081/sku/80900190?format=json&_=1604065253152"
-    # get_letu_price_page(url)
-
-    # url = "https://iledebeaute.ru/shop/care/face/clearning/givenchy-2-clean-to-be-true-prodvhz/"
-    # get_iledebeaute_price_page(url)
