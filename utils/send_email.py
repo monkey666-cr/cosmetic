@@ -12,7 +12,7 @@ email_format = """
 <p><a href="{}">点击购买</a></p>
 """
 sender = SENDER  # 发送者
-receivers = [RECEIVER]  # 接收者
+receivers = RECEIVER  # 接收者
 
 user = USER
 passwd = PASSWORD  # 发送者的授权码

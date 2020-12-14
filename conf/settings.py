@@ -56,7 +56,7 @@ try:
     USER = email_conf['user']
     PASSWORD = email_conf['password']
     SENDER = email_conf['sender']
-    RECEIVER = email_conf['receiver']
+    RECEIVER = email_conf['receiver'].split(",")
     SENDER_NAME = email_conf['sender_name']
 except Exception as e:
     print(f"Load Email Conf Failed: {str(e)}")

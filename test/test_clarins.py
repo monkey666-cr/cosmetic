@@ -41,3 +41,10 @@ def test_clarins_login():
     login_index_page = clarins.login()
 
     assert "monkey" in login_index_page
+
+
+def test_clarins_2020_1212(clarins_url_2020_1212):
+    clarins = Clarins(clarins_url_2020_1212)
+    result = clarins()
+
+    print(result)
