@@ -28,7 +28,6 @@ def get_gold_apple_price_page(url):
         try:
             response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
             if response.status_code == 200:
-                print("response status is 200")
                 return response.text
         except Exception as e:
             print(f"Get Gold Apple Price Page Failed: {str(e)}")
