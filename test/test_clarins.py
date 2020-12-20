@@ -48,3 +48,12 @@ def test_clarins_2020_1212(clarins_url_2020_1212):
     result = clarins()
 
     print(result)
+
+
+def test_clarins_is_logined():
+    url = "https://www.clarins.ru/lotion-tonique-toniziruyushchij-loson-s-ekstraktom-irisa-200-ml-80006340.html"
+    clarins = Clarins(url)
+    page_text = clarins.fetch_index_page()
+    res = ClarinsParser.parse_login_username(page_text)
+
+    assert res == "" or res is None

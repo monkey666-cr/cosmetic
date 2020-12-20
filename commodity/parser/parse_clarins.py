@@ -9,6 +9,15 @@ from conf.settings import CLARINS_PASSWORD, CLARINS_ACCOUNT
 class ClarinsParser:
 
     @staticmethod
+    def parse_login_username(text):
+        try:
+            product_info_str = re.findall(r"window.universal_variable.user=(.*?);", text, re.S)[0].strip()
+            product_info = json.loads(product_info_str)
+            return product_info.get("username")
+        except Exception as e:
+            raise Exception(f"Clarins: Parse username Failed: {str(e)}")
+
+    @staticmethod
     def parse_product_info(text) -> dict:
         try:
             product_info_str = re.findall(r"window.universal_variable.product=(.*?)\r\n", text, re.S)[0]
