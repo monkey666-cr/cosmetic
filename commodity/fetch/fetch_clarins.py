@@ -12,22 +12,23 @@ from commodity.parser.parse_clarins import ClarinsParser
 from commodity.fetch import REQUEST_TRY, REQUEST_TIMEOUT
 
 LOCK = threading.Lock()
+instance_lock = threading.Lock()
 
 
 class Clarins:
     __website__ = "Clarins"
 
     def __new__(cls, *args, **kwargs):
-        if not hasattr(cls, "_instance"):
-            cls._instance = object.__new__(cls)
+        with instance_lock:
+            if not hasattr(cls, "_instance"):
+                cls._instance = object.__new__(cls)
 
-            cls._instance.session = requests.session()
-            cls._instance.login_status = False
+                cls._instance.session = requests.session()
+                cls._instance.login_status = False
 
-        return cls._instance
+            return cls._instance
 
-    def __init__(self, url):
-        self.index_url = url
+    def __init__(self):
         self.headers = {
             'authority': 'www.clarins.ru',
             'sec-ch-ua': '"Chromium";v="86", ""Not\\A;Brand";v="99", "Google Chrome";v="86"',
@@ -39,6 +40,7 @@ class Clarins:
         self.result = dict(website=self.__website__)
 
         self.session = getattr(self, "session")
+        self.login_status = getattr(self, "login_status")
 
     def login(self):
         LOCK.acquire()
@@ -101,13 +103,13 @@ class Clarins:
 
         raise Exception(error_msg)
 
-    def fetch_index_page(self):
+    def fetch_index_page(self, url):
         # 访问商品首页
         error_msg = ""
         for _ in range(REQUEST_TRY):
             try:
                 response = self.session.get(
-                    self.index_url, headers=self.headers, timeout=REQUEST_TIMEOUT)
+                    url, headers=self.headers, timeout=REQUEST_TIMEOUT)
                 if response.status_code == 200:
                     return response.text
                 raise Exception(
@@ -184,30 +186,18 @@ class Clarins:
         self.result["price"] = price
         self.result["low_price"] = price
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, url, *args, **kwargs):
         try:
             # 更新登录cookie dwsid
             self.login()
-            index_page = self.fetch_index_page()
+            index_page = self.fetch_index_page(url)
             # 解析基本信息
             username = ClarinsParser.parse_login_username(index_page)
             if not username:
                 print("登录失效!重新登录")
                 self.login_status = False
-            # add_cart_params = self.parse_base_info(index_page)
+                
             self.parse_base_info(index_page)
-
-            # if not self.result.get("status"):
-            #     self.result["price"] = "0"
-            #     self.result["low_price"] = "0"
-            #     return self.result
-
-            # # 添加购物车
-            # self.fetch_add_product_to_cart(add_cart_params)
-            # # 查询购物车页面
-            # cart_page = self.fetch_cart()
-            # # 解析购物车页面，获取价格以及状态
-            # self.parse_price(cart_page)
 
             return self.result
         except Exception as e:

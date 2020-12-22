@@ -73,8 +73,7 @@ def lancome_start(url, **kwargs):
 
 @start_wrapper
 def clarins_start(url, **kwargs):
-    clarins = Clarins(url)
-    return clarins()
+    return Clarins()(url)
 
 
 if __name__ == '__main__':
