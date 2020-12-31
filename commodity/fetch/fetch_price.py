@@ -50,7 +50,7 @@ class GetRiveGaucheInfo:
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8'
         }
         self._proxies = None
-        if PROXY_HOST and PROXY_HOST:
+        if PROXY_HOST and PROXY_PORT:
             self._proxies = {
                 "http": f"http://{PROXY_HOST}:{PROXY_PORT}",
                 "https": f"https://{PROXY_HOST}:{PROXY_PORT}"
@@ -73,21 +73,17 @@ class GetRiveGaucheInfo:
         # 增加购物车
         print("Rive Add Cart ......")
 
-        url = "https://shop.rivegauche.ru/cart/add"
+        url = f"https://shop.rivegauche.ru/rg/v1/newRG/carts/current/entries?qty=1&code={product_id}&fields=DEFAULT"
 
-        data = {
-            "productCodePost": product_id,
-            "CSRFToken": "ae09a3e6-9be1-4237-9870-822f4c1ca4c3"
-        }
         headers = copy.deepcopy(self.headers)
         headers["Referer"] = self.start_url
-        headers["Content-Type"] = 'application/x-www-form-urlencoded; charset=UTF-8'
+        headers["Content-Type"] = 'application/json'
         headers["X-Requested-With"] = 'XMLHttpRequest'
 
         error_msg = ""
         for _ in range(REQUEST_TRY):
             try:
-                self.session.post(url, headers=headers, data=data, proxies=self._proxies, timeout=REQUEST_TIMEOUT)
+                res = self.session.post(url, headers=headers, data={}, proxies=self._proxies, timeout=REQUEST_TIMEOUT)
                 break
             except Exception as e:
                 error_msg = f"Fetch /cart/add Failed: {str(e)}"
@@ -98,6 +94,7 @@ class GetRiveGaucheInfo:
         # 商品状态
         print("Rive Checkout Product status ......")
         url = f"https://shop.rivegauche.ru/cart/rollover/RgMiniCart?_={str(int(time.time() * 1000))}"
+        url = "https://shop.rivegauche.ru/cart"
 
         headers = copy.deepcopy(self.headers)
         headers["Referer"] = self.start_url
@@ -127,7 +124,7 @@ class GetRiveGaucheInfo:
             low_price = RiveParser.get_page_low_price(root)
             price = RiveParser.get_page_price(root)
 
-            result = {
+            result = { 
                 "website": "Rive",
                 "product_id": product_id,
                 "product_name": product_name,

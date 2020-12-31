@@ -1,3 +1,5 @@
+import re
+
 from lxml import etree
 
 
@@ -6,9 +8,10 @@ class RiveParser:
     def get_product_id(element: etree.Element):
         try:
             product_id = element.xpath(
-                '//input[@name="productCodePost"]')[0].get("value")
+                "//div[contains(@class, 'product-code')]")[0].text
             if product_id is None:
                 raise Exception("Product ID is None")
+            product_id = product_id.split()[-1]
             return product_id
         except Exception as e:
             raise Exception(f"Get Product ID Failed: {str(e)}")
@@ -16,8 +19,7 @@ class RiveParser:
     @staticmethod
     def get_page_low_price(element: etree.Element):
         try:
-            price = element.xpath(
-                '//*[@itemprop="lowPrice"] | //*[contains(@class, "discount-gold_price")]')[0].get("content")
+            price = element.xpath("//div[@itemprop='price']")[0].get("content")
             if not price:
                 raise Exception("Low Price is None")
             return price
@@ -27,7 +29,7 @@ class RiveParser:
     @staticmethod
     def get_page_price(element: etree.Element):
         try:
-            price = element.xpath('//*[@itemprop="price"]')[-1].get("content")
+            price = element.xpath("//div[@itemprop='price']")[-1].get("content")
             if not price:
                 raise Exception("Price is None")
             return price
@@ -48,9 +50,13 @@ class RiveParser:
     @staticmethod
     def get_product_name(element: etree.Element):
         try:
-            product_name = element.xpath('//h1')[0].text
+            product_name = element.xpath(
+                '//h1[contains(@class, "product-name")]')[0]
             if product_name is None:
                 raise Exception("Get Product Name is None")
+            product_name = etree.tostring(product_name)
+            product_name = str(product_name, encoding='utf-8')
+            product_name = re.findall(r'/>(.*?)</h1>', product_name)[0].strip()
             return product_name
         except Exception as e:
             raise Exception(f"Get Product Name Failed: {str(e)}")
