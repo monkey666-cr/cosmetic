@@ -93,12 +93,10 @@ class GetRiveGaucheInfo:
     def _product_status(self):
         # 商品状态
         print("Rive Checkout Product status ......")
-        url = f"https://shop.rivegauche.ru/cart/rollover/RgMiniCart?_={str(int(time.time() * 1000))}"
-        url = "https://shop.rivegauche.ru/cart"
+        url = "https://shop.rivegauche.ru/cms/v1/newRG/components/ngMiniCart"
 
         headers = copy.deepcopy(self.headers)
         headers["Referer"] = self.start_url
-        headers["X-Requested-With"] = 'XMLHttpRequest'
 
         error_msg = ""
         for _ in range(REQUEST_TRY):
@@ -106,7 +104,7 @@ class GetRiveGaucheInfo:
                 response = self.session.get(url, headers=headers, proxies=self._proxies, timeout=REQUEST_TIMEOUT)
                 if response.status_code != 200:
                     raise Exception("Fetch product status Response is not 200")
-                return response.text
+                return response.json()
             except Exception as e:
                 error_msg = f"Fetch product status Failed: {str(e)}"
         else:
@@ -121,24 +119,25 @@ class GetRiveGaucheInfo:
             root = etree.HTML(price_page)
             product_id = RiveParser.get_product_id(root)
             product_name = RiveParser.get_product_name(root)
-            low_price = RiveParser.get_page_low_price(root)
-            price = RiveParser.get_page_price(root)
+            # low_price = RiveParser.get_page_low_price(root)
+            # price = RiveParser.get_page_price(root)
 
             result = { 
                 "website": "Rive",
                 "product_id": product_id,
                 "product_name": product_name,
-                "low_price": low_price,
-                "price": price
             }
 
             # 提交商品至购物车
             self._add_cart(product_id)
             # 检测商品是否可购买
-            cart_page = self._product_status()
-            status = RiveParser.get_product_status(etree.HTML(cart_page))
+            cart_info = self._product_status()
+            status = cart_info.get("otherProperties").get("cartContainsDeliveryProducts")
+            # status = RiveParser.get_product_status(etree.HTML(cart_page))
 
             result["status"] = status
+            result["low_price"] = cart_info.get("otherProperties").get("cart").get("totalPrice").get("value")
+            result["price"] = cart_info.get("otherProperties").get("cart").get("totalPriceWithoutDiscounts").get("value")
 
             return result
         except Exception as e:
