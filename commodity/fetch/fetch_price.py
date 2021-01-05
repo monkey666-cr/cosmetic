@@ -114,7 +114,8 @@ class GetRiveGaucheInfo:
         try:
             price_page = self.get_rive_gauche_price_page()
             if price_page is None:
-                raise Exception(f"{self.__website__}: Parse Price Page Failed, text type is None")
+                raise Exception(
+                    f"{self.__website__}: Parse Price Page Failed, text type is None")
 
             root = etree.HTML(price_page)
             product_id = RiveParser.get_product_id(root)
@@ -122,7 +123,7 @@ class GetRiveGaucheInfo:
             # low_price = RiveParser.get_page_low_price(root)
             # price = RiveParser.get_page_price(root)
 
-            result = { 
+            result = {
                 "website": "Rive",
                 "product_id": product_id,
                 "product_name": product_name,
@@ -132,12 +133,15 @@ class GetRiveGaucheInfo:
             self._add_cart(product_id)
             # 检测商品是否可购买
             cart_info = self._product_status()
-            status = cart_info.get("otherProperties").get("cartContainsDeliveryProducts")
+            status = cart_info.get("otherProperties").get(
+                "cartContainsDeliveryProducts")
             # status = RiveParser.get_product_status(etree.HTML(cart_page))
 
             result["status"] = status
-            result["low_price"] = cart_info.get("otherProperties").get("cart").get("totalPrice").get("value")
-            result["price"] = cart_info.get("otherProperties").get("cart").get("totalPriceWithoutDiscounts").get("value")
+            result["low_price"] = cart_info.get("otherProperties").get(
+                "cart").get("totalPrice").get("value")
+            result["price"] = cart_info.get("otherProperties").get(
+                "cart").get("totalPriceWithoutDiscounts").get("value")
 
             return result
         except Exception as e:
@@ -161,7 +165,8 @@ class GetLetuPriceInfo:
         """访问首页。获取session id"""
         for _ in range(REQUEST_TRY):
             try:
-                response = self.session.get(self.index_url, headers=self.headers, timeout=REQUEST_TIMEOUT)
+                response = self.session.get(
+                    self.index_url, headers=self.headers, timeout=REQUEST_TIMEOUT)
                 if response.status_code == 200:
                     return response.text
                 raise Exception(f"Response Is Not 200")
@@ -174,9 +179,11 @@ class GetLetuPriceInfo:
 
         for _ in range(REQUEST_TRY):
             try:
-                response = self.session.get(self.index_url, headers=headers, timeout=REQUEST_TIMEOUT)
+                response = self.session.get(
+                    self.index_url, headers=headers, timeout=REQUEST_TIMEOUT)
                 if response.status_code == 200:
-                    return response.json()
+                    self.price_info = response.json()
+                    return self.price_info
                 raise Exception("Get letu Price Response is None")
             except Exception as e:
                 print(f"Get letu Price Error: {str(e)}")
@@ -189,10 +196,23 @@ class GetLetuPriceInfo:
         except IndexError as e:
             raise Exception(f"Parse ID Error: {str(e)}")
 
+    @staticmethod
+    def get_product_id(product_content):
+        return product_content.get("product").get("repositoryId")
+
+    @staticmethod
+    def get_catalog_ref_ids(product_content):
+        return product_content.get("selectedSku").get("repositoryId")
+
     def add_product_to_cart(self):
         """添加商品到购物车"""
         # 1, 从url中解析出 catalogRefIds 和 productId
-        product_id, catalog_ref_ids = self.parse_id(self.index_url)
+        try:
+            product_id, catalog_ref_ids = self.parse_id(self.index_url)
+        except Exception:
+            product_info = self.price_info["contents"][0]["mainContent"][0]["contents"][0]["productContent"][0]
+            product_id, catalog_ref_ids = self.get_product_id(
+                product_info), self.get_catalog_ref_ids(product_info)
 
         url = "https://www.letu.ru/rest/model/atg/commerce/order/purchase/CartModifierActor/addItemToOrder"
         headers = copy.deepcopy(self.headers)
@@ -205,7 +225,8 @@ class GetLetuPriceInfo:
             "_dynSessConf": self.session_id
         }
         try:
-            response = self.session.post(url, headers=headers, data=json.dumps(data), timeout=REQUEST_TIMEOUT)
+            response = self.session.post(
+                url, headers=headers, data=json.dumps(data), timeout=REQUEST_TIMEOUT)
             if response.status_code == 200:
                 return response.json()
             raise Exception(f"Letu Add Product Failed: Response is Not 200")
@@ -215,7 +236,8 @@ class GetLetuPriceInfo:
     def get_product_status(self):
         url = "https://www.letu.ru/rest/model/ru/letu/delivery/service/rest/DeliveryInformationActor/orderDelivery-v2"
 
-        data = {"cityId": "8113", "pushSite": "storeMobileRU", "_dynSessConf": self.session_id}
+        data = {"cityId": "8113", "pushSite": "storeMobileRU",
+                "_dynSessConf": self.session_id}
         headers = {
             'authority': 'www.letu.ru',
             'content-type': 'application/json; charset=UTF-8',
@@ -229,10 +251,12 @@ class GetLetuPriceInfo:
 
         for _ in range(REQUEST_TRY):
             try:
-                response = self.session.post(url, headers=headers, data=json.dumps(data))
+                response = self.session.post(
+                    url, headers=headers, data=json.dumps(data))
                 if response.status_code == 200:
                     return response.json()
-                raise Exception("Get Letu Product Status Response Status is Not 200!")
+                raise Exception(
+                    "Get Letu Product Status Response Status is Not 200!")
             except Exception as e:
                 print(f"Get Letu Product Status Failed: {str(e)}")
 
@@ -247,7 +271,8 @@ def get_iledebeaute_price_page(url):
 
     for _ in range(REQUEST_TRY):
         try:
-            response = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
+            response = requests.get(
+                url, headers=headers, timeout=REQUEST_TIMEOUT)
             if response.status_code == 200:
                 return response.text
             raise Exception(f"Get iledebeaute Price Page Response is not 200")

@@ -10,8 +10,13 @@ def parse_letu_price(url, content):
         return
 
     try:
-        _, repository_id = GetLetuPriceInfo.parse_id(url)
         product_content = content["contents"][0]["mainContent"][0]["contents"][0]["productContent"][0]
+        try:
+            _, repository_id = GetLetuPriceInfo.parse_id(url)
+        except Exception:
+            repository_id = GetLetuPriceInfo.get_catalog_ref_ids(
+                product_content)
+
         sku_info = _select_product(product_content["skuList"], repository_id)
         product = product_content["product"]
 
@@ -39,7 +44,8 @@ def _select_product(sku_list, repository_id):
     for item in sku_list:
         if item['repositoryId'] == repository_id:
             return item
-    raise Exception("Not Match Target Product")
+    return sku_list[0]
+    # raise Exception("Not Match Target Product")
 
 
 def get_letu_product_status(letu: GetLetuPriceInfo):
