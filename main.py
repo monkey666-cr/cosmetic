@@ -23,6 +23,15 @@ def _send_email(url, content=None):
         SUCCESS.append(url)
 
 
+def _is_judgment_status(url):
+    # 过滤不需要判断status的网站
+    no_judgment_status_website = ["www.letu.ru", "shop.rivegauche.ru", "goldapple.ru"]
+    for item in no_judgment_status_website:
+        if item in url:
+            return True
+    return False
+
+
 def start_wrapper(func):
     def inner(url, *args, **kwargs):
         print(f"Crawl URL: {url}")
@@ -31,7 +40,8 @@ def start_wrapper(func):
 
         low_price = kwargs.get("min", 0)
         max_price = kwargs.get("max", 0)
-        if result and result.get("status") and low_price <= float(result.get("low_price", -1)) <= max_price:
+        # 增加判断是否判断库存
+        if result and (_is_judgment_status(url) or result.get("status")) and low_price <= float(result.get("low_price", -1)) <= max_price:
             print(f"Product ID: {result.get('product_id')} 可购买，发送邮件。。。。。。")
             _send_email(url, result)
 
