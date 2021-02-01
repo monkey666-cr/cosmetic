@@ -2,9 +2,11 @@ import time
 
 from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
 
+from commodity.fetch.fetch_sephora import fetch_sephora
+from commodity.parser.parse_sephora import parse_sephora
 from utils.send_email import send_email
 from conf.settings import GOLD_GROUP, RIVE_GROUP, INTERVAL, LETU_GROUP, ILEDEBEAUTE_GROUP, MAX_WORKS, LANCOME_GROUP, \
-    CLARINS_GROUP
+    CLARINS_GROUP, SEPHORA_GROUP
 from commodity.parser.parse_letu_price import parse_letu_price, get_letu_product_status
 from commodity.parser.parse_gold_apple_price import parse_price_page_by_json as parse_gold
 from commodity.parser.parse_iledebeaute_price import parse_price_page as parse_iledebeaute_price_page
@@ -41,7 +43,8 @@ def start_wrapper(func):
         low_price = kwargs.get("min", 0)
         max_price = kwargs.get("max", 0)
         # 增加判断是否判断库存
-        if result and (_is_judgment_status(url) or result.get("status")) and low_price <= float(result.get("low_price", -1)) <= max_price:
+        if result and (_is_judgment_status(url) or result.get("status")) and low_price <= float(
+                result.get("low_price", -1)) <= max_price:
             print(f"Product ID: {result.get('product_id')} 可购买，发送邮件。。。。。。")
             _send_email(url, result)
 
@@ -86,6 +89,14 @@ def clarins_start(url, **kwargs):
     return Clarins()(url)
 
 
+@start_wrapper
+def sephora_start(url, **kwargs):
+    try:
+        return parse_sephora(fetch_sephora(url))
+    except Exception as e:
+        print(f"sephora: unknown error: {e}")
+
+
 if __name__ == '__main__':
     while 1:
         all_tasks = [
@@ -115,6 +126,11 @@ if __name__ == '__main__':
 
         all_tasks.extend([
             executor.submit(clarins_start, url, **value) for url, value in CLARINS_GROUP.items()
+            if url not in SUCCESS]
+        )
+
+        all_tasks.extend([
+            executor.submit(sephora_start, url, **value) for url, value in SEPHORA_GROUP.items()
             if url not in SUCCESS]
         )
 

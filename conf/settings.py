@@ -22,6 +22,7 @@ proxy_conf = {item[0]: item[1] for item in conf.items("proxy")}
 PROXY_HOST = proxy_conf.get("host")
 PROXY_PORT = proxy_conf.get("port")
 
+
 # 解析任务配置
 
 
@@ -41,6 +42,8 @@ ILEDEBEAUTE_GROUP = format_lambda(conf.items('iledebeaute'))
 LANCOME_GROUP = format_lambda(conf.items("lancome"))
 # clarins
 CLARINS_GROUP = format_lambda(conf.items("clarins"))
+# sephora
+SEPHORA_GROUP = format_lambda(conf.items("sephora"))
 
 # 邮箱配置
 email_conf = {item[0]: item[1] for item in conf.items('email')}
