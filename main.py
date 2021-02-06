@@ -92,7 +92,7 @@ def clarins_start(url, **kwargs):
 @start_wrapper
 def sephora_start(url, **kwargs):
     try:
-        return parse_sephora(fetch_sephora(url))
+        return parse_sephora(fetch_sephora(url), url)
     except Exception as e:
         print(f"sephora: unknown error: {e}")
 
