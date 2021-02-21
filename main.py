@@ -43,7 +43,7 @@ def start_wrapper(func):
         low_price = kwargs.get("min", 0)
         max_price = kwargs.get("max", 0)
         # 增加判断是否判断库存
-        if result and (_is_judgment_status(url) or result.get("status")) and low_price <= float(
+        if result and result.get("status") and low_price <= float(
                 result.get("low_price", -1)) <= max_price:
             print(f"Product ID: {result.get('product_id')} 可购买，发送邮件。。。。。。")
             _send_email(url, result)
