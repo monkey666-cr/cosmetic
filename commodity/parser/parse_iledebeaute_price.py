@@ -20,8 +20,9 @@ def parse_price_page(url, text):
         product_id = product_info_offer.get("id", 0)
         product_name = product_info_offer.get("name", "")
         low_price = product_info_offer.get("price_vip", 0)
-        price = product_info_offer.get("price", 0)
-        status = _get_product_status(product_info)
+        price = product_info_offer.get("price_single", 0)
+        # status = _get_product_status(product_info)
+        status = False if product_info_offer['b_available'] == 0 else True
 
         result = {
             "website": "iledebeaute",
