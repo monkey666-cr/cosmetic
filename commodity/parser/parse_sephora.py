@@ -16,7 +16,7 @@ def parse_sephora(html, url):
     product_name = product["product_name"]
     low_price = product["offer_list"][target_id]["price_vip"]
     price = product["offer_list"][target_id]["price_single"]
-    status = False if product["s_available"] == "notAvailable" else True
+    status = False if product["offer_list"][target_id]["b_available"] == 0 else True
 
     return {
         "website": "sephora",

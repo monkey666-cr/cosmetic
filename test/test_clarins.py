@@ -9,9 +9,10 @@ def test_clarins_fetch():
     # url = "https://www.clarins.ru/nabor-sredstv-uhoda--osvezhayushchih-cvet-lica-80072404.html"
     # url = "https://www.clarins.ru/double-serum-kompleksnaya-omolazhivayushchaya-dvojnaya-syvorotka-30ml-80025862.html"
     # url = "https://www.clarins.ru/double-serum-kompleksnaya-omolazhivayushchaya-dvojnaya-syvorotka-30ml-80025863.html"
-    url = "https://www.clarins.ru/lotion-tonique-toniziruyushchij-loson-s-ekstraktom-irisa-200-ml-80006340.html"
-    clarins = Clarins(url)
-    result = clarins()
+    # url = "https://www.clarins.ru/lotion-tonique-toniziruyushchij-loson-s-ekstraktom-irisa-200-ml-80006340.html"
+    url = "https://www.clarins.ru/nabory-i-podarki/nabory-730a/antivozrastnaya-programma-uhoda-30%2B-80076606.html"
+    clarins = Clarins()
+    result = clarins(url)
 
     print(result)
 
@@ -20,7 +21,7 @@ def test_clarins_fetch():
 
 def test_clarins_parse_login_index_page():
     url = "https://www.clarins.ru/regeneriruyushchij-dnevnoj-krem-protiv-morshchin-dlya-suhoj-kozhi-80033511.html"
-    clarins = Clarins(url)
+    clarins = Clarins()
     login_index_page = clarins._fetch_login_index_page()
 
     assert "Мой профиль" in login_index_page
