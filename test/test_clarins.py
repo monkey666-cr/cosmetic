@@ -10,7 +10,7 @@ def test_clarins_fetch():
     # url = "https://www.clarins.ru/double-serum-kompleksnaya-omolazhivayushchaya-dvojnaya-syvorotka-30ml-80025862.html"
     # url = "https://www.clarins.ru/double-serum-kompleksnaya-omolazhivayushchaya-dvojnaya-syvorotka-30ml-80025863.html"
     # url = "https://www.clarins.ru/lotion-tonique-toniziruyushchij-loson-s-ekstraktom-irisa-200-ml-80006340.html"
-    url = "https://www.clarins.ru/nabory-i-podarki/nabory-730a/antivozrastnaya-programma-uhoda-30%2B-80076606.html"
+    url = "https://www.clarins.ru/nabory-i-podarki/nabory-730a/antivozrastnaya-programma-uhoda-30+-80076606.html"
     clarins = Clarins()
     result = clarins(url)
 

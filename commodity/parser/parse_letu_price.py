@@ -49,7 +49,7 @@ def _select_product(sku_list, repository_id):
 
 
 def get_letu_product_status(letu: GetLetuPriceInfo):
-    _get_session_id(letu)
+    letu.set_session_id()
     letu.add_product_to_cart()
     return _get_product_status(letu)
 
@@ -63,22 +63,21 @@ def _get_product_status(letu: GetLetuPriceInfo):
         raise Exception("Get Letu Product Status Failed")
 
 
-def _get_session_id(letu: GetLetuPriceInfo):
-    res = letu.get_index()
-    try:
-        session_id = re.findall(r"_dynSessConf.*?(-{0,1}\d+)", res)[0]
-        letu.session_id = session_id
-    except IndexError as e:
-        raise Exception(f"Get Letu Session ID Failed: {str(e)}")
-
-
 if __name__ == '__main__':
-    # url = "https://www.letu.ru/product/lancome-krem-dlya-kozhi-vokrug-glaz-s-effektom-vosstanovleniya-absolue/68700001/sku/83300003"
-    # url = "https://www.letu.ru/product/clarins-regeneriruyushchaya-omolazhivayushchaya-syvorotka-dlya-kozhi-vokrug-glaz-extra-firming-yeux/73700067/sku/88200133"
-    # url = "https://www.letu.ru/product/ysl-libre/78300050/sku/92600267"
-    url = "https://www.letu.ru/product/clarins-kompleksnaya-omolazhivayushchaya-dvoinaya-syvorotka-intensivnogo-deistviya-double-serum/56700001/sku/70600002"
-    letu = GetLetuPriceInfo(url)
-    content = letu.get_letu_price_page()
-    res = parse_letu_price(url, content)
-    res["status"] = get_letu_product_status(letu)
-    print(res)
+    url_list = [
+        "https://www.letu.ru/product/guerlain-ukreplyayushchii-loson-dlya-litsa-s-matochnym-molochkom-abeille-royale/91300028/sku/102700310",
+        "https://www.letu.ru/product/guerlain-syvorotka-dvoinogo-deistviya-abeille-royale-double-r-renew-repair/64500087/sku/79900014",
+        "https://www.letu.ru/product/guerlain-lyogkoe-maslo-syvorotka-dlya-litsa-abeille-royale/89700060/sku/100100320",
+        "https://www.letu.ru/product/lancome-krem-dlya-kozhi-vokrug-glaz-s-effektom-vosstanovleniya-absolue/68700001/sku/83300003",
+        "https://www.letu.ru/product/lancome-intensivnyi-krem-dlya-kozhi-litsa-s-effektom-vosstanovleniya-absolue/68700003",
+        "https://www.letu.ru/product/lancome-intensivnyi-krem-dlya-kozhi-litsa-s-effektom-vosstanovleniya-absolue/68700003",
+        "https://www.letu.ru/product/lancome-nezhnyi-krem-dlya-kozhi-litsa-s-effektom-vosstanovleniya-absolue/68700004/sku/83300006",
+        "https://www.letu.ru/product/clarins-kompleksnaya-omolazhivayushchaya-dvoinaya-syvorotka-intensivnogo-deistviya-double-serum/56700001/sku/70600002",
+        "https://www.letu.ru/product/shiseido-nabor-s-lifting-kremom-povyshayushchim-uprugost-kozhi-vokrug-glaz-vital-perfection/91000004/sku/105400004",
+
+    ]
+    for url in url_list:
+        letu = GetLetuPriceInfo(url)
+        result = parse_letu_price(url, letu.get_letu_price_page())
+        result["status"] = get_letu_product_status(letu)
+        print(result)

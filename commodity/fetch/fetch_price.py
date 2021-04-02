@@ -177,10 +177,12 @@ class GetLetuPriceInfo:
         headers = copy.deepcopy(self.headers)
         headers["accept"] = 'application/json, text/javascript, */*; q=0.01'
 
+        url = self.index_url + "?pushSite=storeMobileRU&format=json"
+        url = url.replace("product", "storeru/product")
         for _ in range(REQUEST_TRY):
             try:
                 response = self.session.get(
-                    self.index_url, headers=headers, timeout=REQUEST_TIMEOUT)
+                    url, headers=headers, timeout=REQUEST_TIMEOUT)
                 if response.status_code == 200:
                     self.price_info = response.json()
                     return self.price_info
@@ -203,6 +205,20 @@ class GetLetuPriceInfo:
     @staticmethod
     def get_catalog_ref_ids(product_content):
         return product_content.get("selectedSku").get("repositoryId")
+
+    def set_session_id(self):
+        url = "https://www.letu.ru/rest/model/atg/rest/SessionConfirmationActor/getSessionConfirmationNumber"
+        error_msg = ""
+        for _ in range(3):
+            try:
+                response = self.session.get(url, timeout=REQUEST_TIMEOUT)
+                if response.status_code == 200:
+                    self.session_id = response.json().get("sessionConfirmationNumber")
+                    return
+            except Exception as e:
+                error_msg = "letu get session id: " + str(e)
+        else:
+            raise Exception(error_msg)
 
     def add_product_to_cart(self):
         """添加商品到购物车"""
